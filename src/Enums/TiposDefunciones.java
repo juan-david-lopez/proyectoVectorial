@@ -1,15 +1,19 @@
 package Enums;
 
 public enum TiposDefunciones {
-    Sen,
-    cos,
-    tan,
-    csc,
-    cot,
-    e,
-    ln,
-    log,
-    sqrt,
+    sen(),
+    cos(),
+    tan(),
+    sec(),
+    csc(),
+    cot(),
+    e(),
+    ln(),
+    log(),
+    sqrt(),
+    x,
+    t,
+    w,
 
 
 }

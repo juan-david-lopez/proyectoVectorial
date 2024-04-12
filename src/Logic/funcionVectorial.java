@@ -3,7 +3,7 @@ package Logic;
 public class funcionVectorial {
     private String[] funciones;
     private String nombre;
-    private int limite;
+    private double limites[];
     private int tendenciaLimite;
 
     public funcionVectorial(int tendenciaLimite, String nombre, String[] funciones){
@@ -12,12 +12,12 @@ public class funcionVectorial {
         this.funciones=funciones;
     }
 
-    public int getLimite() {
-        return limite;
+    public double[] getLimite() {
+        return limites;
     }
 
-    public void setLimite(int limite) {
-        this.limite = limite;
+    public void setLimite(double[] limites) {
+        this.limites = limites;
     }
 
     public int getTendenciaLimite() {

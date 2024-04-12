@@ -1,5 +1,8 @@
 package model;
 import Logic.*;
+
+import java.util.Arrays;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -8,15 +11,23 @@ public class Main {
         System.out.println(funcionVecto.getTendenciaLimite());
         boolean comprobar=logica1.validarArregloFuncionVectorial(funcionVecto.getFunciones());
         if(comprobar){
+            String valMostrar="";
+            double[] limites = new double[3];
             for (int i = 0; i <funcionVecto.getFunciones().length; i++) {
-                logica1.calcularLimite(funcionVecto.getTendenciaLimite(),funcionVecto.getFunciones()[i]);
+                double limite=logica1.calcularLimite(funcionVecto.getTendenciaLimite(),funcionVecto.getFunciones()[i]);
+                System.out.println(logica1.evaluarFuncion(funcionVecto.getTendenciaLimite(),funcionVecto.getFunciones()[i]));
+                limites[i]= limite;
+                valMostrar=valMostrar+" "+limite+" ";
             }
+            funcionVecto.setLimite(limites);
+            System.out.println(valMostrar);
+
 
         }else{
-
+            System.out.println("no cumple con los requisitos");
         }
 
-        System.out.println(funcionVecto.getLimite());
+        System.out.println(Arrays.toString(funcionVecto.getLimite()));
 
     }
 
@@ -31,8 +42,7 @@ public class Main {
         String[] funciones = {funcion1,funcion2,funcion3};
         System.out.println( logica1.validarArregloFuncionVectorial(funciones));
 
-        funcionVectorial funcionVecto;
-        return funcionVecto = new funcionVectorial(tendenciaLimite,"funcionVectorial1",funciones);
+        return new funcionVectorial(tendenciaLimite,"funcionVectorial1",funciones);
 
     }
 
