@@ -2,6 +2,8 @@ package Logic;
 
 import Enums.TiposDefunciones;
 
+import java.text.DecimalFormat;
+
 public class Logica1 {
     public boolean  validarIngresos(String ingreso){
         return ingreso != null && !ingreso.equals(null);
@@ -17,13 +19,37 @@ public class Logica1 {
     }
 
     public double calcularLimite(int tendenciaLimite, String funcion){
-        double tendenciaLimDerch=evaluarFuncion(tendenciaLimite+1,funcion);
-        double tendenciaLimizq=evaluarFuncion(tendenciaLimite-1, funcion);
-        while(Math.abs(tendenciaLimizq-tendenciaLimDerch)<0.1){
-            tendenciaLimizq=evaluarFuncion((tendenciaLimizq+tendenciaLimite)/2, funcion);
-            tendenciaLimDerch=evaluarFuncion((tendenciaLimite+tendenciaLimDerch)/2,funcion);
+        int regulador=0;
+        double iteracion=0.1;
+        if (funcion.contains("x+")) {
+            regulador=-(Integer.parseInt(funcion.substring(funcion.indexOf("+"))));
         }
-        return tendenciaLimizq;
+
+        int itera=0;
+        double limizquir=tendenciaLimite-1;
+        double limiderech=tendenciaLimite+1;
+        double evaluacion = evaluacion(limizquir,tendenciaLimite,funcion);
+        double evaluacion2 =evaluacion(limiderech,tendenciaLimite,funcion);
+        while (Math.abs(evaluacion-evaluacion2)>iteracion){
+            evaluacion=evaluacion(evaluacion,tendenciaLimite+regulador,funcion);
+            evaluacion2=evaluacion(evaluacion2,tendenciaLimite+regulador,funcion);
+            itera++;
+        }
+        System.out.println(itera);
+        if(funcion.contains("e(x)")){
+            evaluacion2=redondear(tendenciaLimite,evaluacion2,funcion);
+        } else if (funcion.contains("x^")) {
+            evaluacion2=redondear(tendenciaLimite,evaluacion2,funcion);
+            return evaluacion2;
+        }
+        return evaluacion2;
+    }
+
+
+    public double evaluacion(double tendenciaLimitelado, double tendenciaLimite,String funcion){
+        double valorPorItera=((tendenciaLimitelado+tendenciaLimite)/2);
+        double evaluacion = evaluarFuncion(valorPorItera,funcion);
+        return evaluacion;
     }
 
     public double evaluarFuncion(double tendenciaLimite, String funcion) {
@@ -94,22 +120,23 @@ public class Logica1 {
                 }
             } else if (funcion.contains("x^")) {
                 if(Obtenerexponente(funcion)>-1){
-                    evaluacion=Math.pow(tendenciaLimite, Obtenerexponente(funcion))+siguienteTermino(funcion);
+                    evaluacion=Math.pow(tendenciaLimite, Obtenerexponente(funcion));
                 }
 
+            }else if (funcion.contains("1/x")) {
+                evaluacion=1/tendenciaLimite;
             }
-            else if(funcion.contains("x") && verficarSolo(funcion)){
-                evaluacion=tendenciaLimite;
+            else if(funcion.contains("x") || verficarSolo(funcion)){
+                evaluacion=tendenciaLimite+siguienteTermino(funcion);
             } else if (funcion.contains("t") && verficarSolo(funcion)) {
-                evaluacion=tendenciaLimite;
+                evaluacion=tendenciaLimite+siguienteTermino(funcion);
             }
         }
         return evaluacion;
     }
 
     private boolean verficarSolo(String funcion) {
-        boolean validar=false;
-        if(funcion.length()==1) validar = true;
+        boolean validar= funcion.length() == 1;
         return validar;
     }
 
@@ -128,7 +155,7 @@ public class Logica1 {
     private int siguienteTermino(String funcion) {
         int ubicacionMas=funcion.indexOf('+');
         if(ubicacionMas>=0){
-            return Integer.parseInt(funcion.substring(ubicacionMas,funcion.length()));
+            return Integer.parseInt(funcion.substring(ubicacionMas));
         }
         return 0;
     }
@@ -156,6 +183,16 @@ public class Logica1 {
     private boolean Comparador(String value, String funcion) {
         return funcion.contains(value);
     }
+    private double redondear(double evaluacion2,double tendenciaLimite, String funcion) {
+        String vale="0.00";
+        String tiende = ""+Math.round(Math.round(tendenciaLimite));
+        String valor= vale+tiende.substring(2);
+        if(Obtenerexponente(funcion)>2){
+            valor= vale+tiende.substring(3,funcion.length()-1);
+        }
+        return Double.parseDouble(valor)+evaluarFuncion(evaluacion2,funcion);
+    }
+
 
 
 }
